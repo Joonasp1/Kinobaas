@@ -1,0 +1,6 @@
+1	'Popkorn (väike)'	1.50
+2	'Popkorn (keskmine)'	3.00
+3	'Popkorn (suur)'	4.50
+4	'Jook (väike)'	1.00
+5	'Jook (keskmine)'	2.00
+6	'Jook (suur)'	3.00

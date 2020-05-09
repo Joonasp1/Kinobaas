@@ -31,9 +31,7 @@ Saal integer not null);
 
 CREATE TABLE Kinod(
 ID integer not null default autoincrement primary key,
-Nimi varchar(150) not null,
-Päev datetime not null,
-Sissetulek float not null);
+Nimi varchar(150) not null);
 
 CREATE TABLE Seansid(
 ID integer not null default autoincrement primary key,
@@ -48,3 +46,20 @@ CREATE TABLE Kinoseansid(
 ID integer not null default autoincrement primary key,
 Kino integer not null,
 Seanss integer not null);
+
+CREATE TABLE Sissetulekud(
+ID integer not null default autoincrement primary key,
+Kino integer not null,
+Päev date not null,
+Sissetulek float);
+
+DROP TABLE toidud;
+DROP TABLE Saalid;
+DROP TABLE Filmid;
+DROP TABLE Külastajad;
+DROP TABLE Tellimus;
+DROP TABLE Kinosaalid;
+DROP TABLE Kinod;
+DROP TABLE Seansid;
+DROP TABLE Kinoseansid;
+DROP TABLE Sissetulekud;

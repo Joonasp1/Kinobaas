@@ -1,0 +1,4 @@
+1	'Kino Tartu'
+2	'Kino Tartu'
+3	'Kino Tallinn'
+4	'Kino Tallinn'

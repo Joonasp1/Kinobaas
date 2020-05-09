@@ -1,0 +1,4 @@
+1	'Aeglased ja vihased'	2012	'Robert Vigla'	5.0
+2	'Mongolite kokkutulek'	2005	'Mucho Hablas'	10.0
+3	'Jumanji: The Next Level'	2019	'Jake Kasdan'	8.0
+4	'Tasujad: Lõppmäng'	2019	'Joe Russo'	7.0
