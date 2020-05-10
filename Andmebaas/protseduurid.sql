@@ -31,13 +31,13 @@ END;
 CALL top_filmid;
 
 CREATE PROCEDURE külastaja_tellimused (
-IN külastaja_id INTEGER)
+IN külastaja_id FLOAT)
 RESULT (
 toidud VARCHAR(50),
 hind VARCHAR(50))
 BEGIN
-SELECT nimi, hind FROM Toidud, Tellimus
-WHERE Tellimus.tellija=külastaja_id AND tellimus.toit=toidud.id ORDER BY nimi;
+SELECT nimi, hind FROM Toidud, Tellimused
+WHERE Tellimused.tellija=külastaja_id AND tellimused.toit=toidud.id ORDER BY nimi;
 END;
 
 call külastaja_tellimused(2)
@@ -49,6 +49,24 @@ seansi_id VARCHAR(50),
 film VARCHAR(50),
 sissetulek INTEGER)
 BEGIN
-SELECT DISTINCT  seansid.id, filmid.nimi, külastajate_arv*Hind+summa FROM Seansid, Tellimus, Filmid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimus, Külastajad WHERE Seanss=seansi_id AND Tellimus.tellija=külastajad.id AND tellimus.toit=toidud.id) AS tellimused
+SELECT DISTINCT  seansid.id, filmid.nimi, külastajate_arv*Hind+summa FROM Seansid, Tellimused, Filmid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad WHERE Seanss=seansi_id AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused_sissetulek
 WHERE seansi_id=Seansid.id AND Filmid.id=Seansid.film ORDER BY filmid.nimi;
 END;
+
+call seansi_sissetulek(4)
+
+CREATE PROCEDURE kino_sissetulek(
+IN kino_id INTEGER)
+RESULT (
+sissetulek FLOAT)
+BEGIN
+SELECT SUM(test)+summa FROM (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS Seans WHERE Külastajad.Seanss=Seans.seanss AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused, (SELECT SUM(külastajate_arv*Hind) AS test FROM Seansid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS Seans WHERE Külastajad.Seanss=Seans.seanss AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS seans
+WHERE seans.seanss=Seansid.id GROUP by seans.seanss, Seansid.id, Hind, külastajate_arv, summa ORDER BY seans.seanss) AS mongol GROUP BY summa;
+END;
+
+CALL kino_sissetulek(4)
+SELECT * FROM külastajad
+
+DROP PROCEDURE kino_sissetulek;
+DROP PROCEDURE seansi_sissetulek;
+DROP PROCEDURE külastaja_tellimused;
