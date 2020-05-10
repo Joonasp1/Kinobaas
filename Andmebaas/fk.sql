@@ -3,12 +3,12 @@ FOREIGN KEY (seanss)
 REFERENCE seansid(id)
 ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE tellimus ADD CONSTRAINT fk_tellimus_2_toit
+ALTER TABLE tellimused ADD CONSTRAINT fk_tellimus_2_toit
 FOREIGN KEY (toit)
 REFERENCE toidud(id)
 ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE tellimus ADD CONSTRAINT fk_tellimus_2_tellija
+ALTER TABLE tellimused ADD CONSTRAINT fk_tellimus_2_tellija
 FOREIGN KEY (tellija)
 REFERENCE külastajad(id)
 ON DELETE RESTRICT ON UPDATE CASCADE;

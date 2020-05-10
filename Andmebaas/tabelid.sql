@@ -19,7 +19,7 @@ CREATE TABLE Külastajad(
 ID integer not null default autoincrement primary key,
 Seanss integer not null);
 
-CREATE TABLE Tellimus(
+CREATE TABLE Tellimused(
 ID integer not null default autoincrement primary key,
 Toit integer not null,
 Tellija integer not null);
@@ -57,7 +57,7 @@ DROP TABLE toidud;
 DROP TABLE Saalid;
 DROP TABLE Filmid;
 DROP TABLE Külastajad;
-DROP TABLE Tellimus;
+DROP TABLE Tellimused;
 DROP TABLE Kinosaalid;
 DROP TABLE Kinod;
 DROP TABLE Seansid;
