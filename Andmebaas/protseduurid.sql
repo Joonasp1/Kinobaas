@@ -7,10 +7,10 @@ hind float)
 BEGIN
 SELECT filmid.nimi,seansid.aeg,seansid.hind
 FROM seansid,filmid,kinoseansid,kinod
-WHERE filmid.id = seansid.film AND seansid.id = kinoseansid.seanss AND kinoseansid.kino = kino_id
+WHERE filmid.id = seansid.film AND seansid.id = kinoseansid.seanss AND kinoseansid.kino = kino_id AND kinoseansid.kino = kinod.id
 END;
 
-CALL seanside_info(4)
+CALL seanside_info(3)
 DROP PROCEDURE seanside_info
 
 SELECT * FROM seansid
@@ -49,18 +49,18 @@ seansi_id VARCHAR(50),
 film VARCHAR(50),
 sissetulek INTEGER)
 BEGIN
-SELECT DISTINCT  seansid.id, filmid.nimi, külastajate_arv*Hind+summa FROM Seansid, Tellimused, Filmid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad WHERE Seanss=seansi_id AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused_sissetulek
+SELECT DISTINCT  seansid.id, filmid.nimi, CASE WHEN summa IS NULL THEN Külastajate_arv*Hind ELSE Külastajate_arv*Hind+summa END FROM Seansid, Tellimused, Filmid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad WHERE Seanss=seansi_id AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused_sissetulek
 WHERE seansi_id=Seansid.id AND Filmid.id=Seansid.film ORDER BY filmid.nimi;
 END;
 
-call seansi_sissetulek(4)
+call seansi_sissetulek(2)
 
 CREATE PROCEDURE kino_sissetulek(
 IN kino_id INTEGER)
 RESULT (
 sissetulek FLOAT)
 BEGIN
-SELECT SUM(test)+summa FROM (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS Seans WHERE Külastajad.Seanss=Seans.seanss AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused, (SELECT SUM(külastajate_arv*Hind) AS test FROM Seansid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS Seans WHERE Külastajad.Seanss=Seans.seanss AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS seans
+SELECT CASE WHEN summa IS NULL THEN SUM(test) ELSE SUM(test)+summa END FROM (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS Seans WHERE Külastajad.Seanss=Seans.seanss AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused, (SELECT SUM(külastajate_arv*Hind) AS test FROM Seansid, (SELECT SUM(hind) AS summa FROM Toidud, Tellimused, Külastajad, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS Seans WHERE Külastajad.Seanss=Seans.seanss AND Tellimused.tellija=külastajad.id AND tellimused.toit=toidud.id) AS tellimused, (SELECT DISTINCT seanss FROM Kinod, Kinoseansid WHERE kino_id=Kinoseansid.kino) AS seans
 WHERE seans.seanss=Seansid.id GROUP by seans.seanss, Seansid.id, Hind, külastajate_arv, summa ORDER BY seans.seanss) AS mongol GROUP BY summa;
 END;
 
